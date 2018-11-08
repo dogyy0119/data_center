@@ -3,8 +3,8 @@ package main
 import (
 	"data_center/zabbix"
 	"fmt"
+	"data_center/config"
 )
-
 
 func main() {
 	get_zabbix_data()
@@ -14,7 +14,13 @@ func main() {
 	get zabbix  item  by using hostid
  */
 func  get_zabbix_data() (){
-	api, err := zabbix.NewAPI("http://120.92.111.176:8080/api_jsonrpc.php", "admin", "LinkedSee@2017")
+
+	conf, err := config.Get_conf()
+	if err != nil {
+		return
+	}
+
+	api, err := zabbix.NewAPI("http://"+conf.Zabbix.Ip+":"+conf.Zabbix.Port+"/api_jsonrpc.php", conf.Zabbix.User, conf.Zabbix.Password)
 	if err != nil {
 		fmt.Println(err)
 		return
