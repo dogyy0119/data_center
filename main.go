@@ -4,18 +4,43 @@ import (
 	"data_center/zabbix"
 	"fmt"
 	"data_center/config"
+	"github.com/robfig/cron"
+	"database/sql"
+	_"github.com/go-sql-driver/mysql"
 )
 
-func main() {
-	get_zabbix_data()
+func main()  {
+
+	var db  *sql.DB
+	db, err := sql.Open("mysql", "root:12345678@tcp(localhost:3306)/test")
+	if err != nil{
+		fmt.Println("connet faile")
+	}
+
+	result, err := db.Exec(
+		"INSERT INTO user (name, age) VALUES (?, ?)",
+		"liuh",
+		27,
+	)
+
+	fmt.Println(result)
 }
+
+func test() {
+	c := cron.New()
+	spec := "0 */1 * * * *"
+	c.AddFunc(spec, get_zabbix_data)
+	c.Start()
+	select {}
+}
+
 
 /**
 	get zabbix  item  by using hostid
  */
 func  get_zabbix_data() (){
 
-	conf, err := config.Get_conf()
+	conf, err := config.Get_ZabbixConf()
 	if err != nil {
 		return
 	}
